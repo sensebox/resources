@@ -1,13 +1,13 @@
 /***********************
 
-This library was written for the Texas Instruments 
-HDC100X temperature and humidity sensor. 
+This library was written for the Texas Instruments
+HDC100X temperature and humidity sensor.
 It has been tested for the HDC1000 and the HDC1008
 Buy the HDC1008 breakout board at: https://www.tindie.com/stores/RFgermany
 This library is made by Florian Roesner.
 Released under GNU GPL v2.0 license.
 
-*************************/ 
+*************************/
 //#include "Arduino.h"
 #include "HDC100X.h"
 //#include "Wire.h"
@@ -130,7 +130,7 @@ uint8_t HDC100X::setMode(uint8_t mode, uint8_t resolution){
 
 uint8_t HDC100X::setHeater(bool state){
 	/* turns on the heater to get rid of condensation. Care must be taken, because it will change the temperature reading
-	** in: 
+	** in:
 	** state: true/false
 	** out:
 	** high byte of the configuration register
@@ -145,7 +145,7 @@ uint8_t HDC100X::setHeater(bool state){
 
 bool HDC100X::battLow(void){
 	// returns a false if input voltage is higher than 2.8V and if lower a true
-	
+
 	if(getConfigReg() & 0x08) return true;
 	return false;
 }
@@ -170,13 +170,13 @@ float HDC100X::getHumi(void){
 
 uint16_t HDC100X::getRawTemp(void){
 	// returns the raw 16bit data of the temperature register
-	if(HDCmode == HDC100X_TEMP || HDCmode == HDC100X_TEMP_HUMI)	
+	if(HDCmode == HDC100X_TEMP || HDCmode == HDC100X_TEMP_HUMI)
 		return read2Byte(HDC100X_TEMP_REG);
 }
 //-----------------------------------------------------------------------
 uint16_t HDC100X::getRawHumi(void){
 	// returns the raw 16bit data of the humidity register
-	if(HDCmode == HDC100X_HUMI || HDCmode == HDC100X_TEMP_HUMI)	
+	if(HDCmode == HDC100X_HUMI || HDCmode == HDC100X_TEMP_HUMI)
 		return read2Byte(HDC100X_HUMI_REG);
 }
 
@@ -213,12 +213,12 @@ uint8_t HDC100X::writeConfigData(uint8_t config){
 	** in:
 	** config: one byte
 	** out:
-	** one byte 0:success  1:data too long to fit in transmit buffer    2:received NACK on transmit of address    3:received NACK on transmit of data    4:other error 
+	** one byte 0:success  1:data too long to fit in transmit buffer    2:received NACK on transmit of address    3:received NACK on transmit of data    4:other error
 	*/
 	Wire.beginTransmission(ownAddr);
 	Wire.write(HDC100X_CONFIG_REG);
-	Wire.write(config); 
-	Wire.write(0x00); 					//the last 8 bits are always 0
+	Wire.write(config);
+	Wire.write((byte)0x00); 					//the last 8 bits are always 0
 	return Wire.endTransmission();
 }
 
