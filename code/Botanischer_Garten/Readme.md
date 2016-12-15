@@ -1,0 +1,2 @@
+- readArduinoPostOSeM.py runs on Raspberry Pi
+- Weatherstation.ino runs on Arduino
