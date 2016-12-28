@@ -8,7 +8,7 @@
 	modified by mhafuzul islam
 
 	version 1.01		 16/9/2014 initial version
-	
+
 	Our example code uses the "pizza-eating" license. You can do anything
 	you like with this code. No really, anything. If you find it useful,
 	buy me italian pizza someday.
@@ -31,23 +31,23 @@ class BMP280
 		char begin();
 			// call pressure.begin() to initialize BMP280 before use
 			// returns 1 if success, 0 if failure (i2C connection problem.)
-				
+
 		short getOversampling(void);
 		char  setOversampling(short oss);
-		
+
 		char startMeasurment(void);
 			// command BMP280 to start a pressure measurement
 			// oversampling: 0 - 3 for oversampling value
 			// returns (number of ms to wait) for success, 0 for fail
-		
+
 		char calcTemperature(double &T, double &uT);
-			// calculation the true temperature from the given uncalibrated Temperature 
-			
+			// calculation the true temperature from the given uncalibrated Temperature
+
 		char calcPressure(double &P, double uP);
 			//calculation for measuring pressure.
-			
+
 		double sealevel(double P, double A);
-			// convert absolute pressure to sea-level pressure 
+			// convert absolute pressure to sea-level pressure
 			// P: absolute pressure (mbar)
 			// A: current altitude (meters)
 			// returns sealevel pressure in mbar
@@ -60,17 +60,17 @@ class BMP280
 
 		char getError(void);
 			// If any library command fails, you can retrieve an extended
-			// error code using this command. Errors are from the wire library: 
+			// error code using this command. Errors are from the wire library:
 			// 0 = Success
 			// 1 = Data too long to fit in transmit buffer
 			// 2 = Received NACK on transmit of address
 			// 3 = Received NACK on transmit of data
 			// 4 = Other error
-			
+
 		char getTemperatureAndPressure(double& T,double& P);
 
 	private:
-	
+
 		char readInt(char address, int &value);
 			// read an signed int (16 bits) from a BMP280 register
 			// address: BMP280 register address
@@ -88,24 +88,26 @@ class BMP280
 			// values: array of char with register address in first location [0]
 			// length: number of bytes to read back
 			// returns 1 for success, 0 for fail, with read bytes in values[] array
-			
+
 		char writeBytes(unsigned char *values, char length);
 			// write a number of bytes to a BMP280 register (and consecutive subsequent registers)
 			// values: array of char with register address in first location [0]
 			// length: number of bytes to write
 			// returns 1 for success, 0 for fail
-		
-		char getUnPT(double &uP, double &uT);	
+
+		char getUnPT(double &uP, double &uT);
 			//get uncalibrated UP and UT value.
-	
-				
-		int dig_T2 , dig_T3 , dig_T4 , dig_P2 , dig_P3, dig_P4, dig_P5, dig_P6, dig_P7, dig_P8, dig_P9; 
+
+
+		int dig_T2 , dig_T3 , dig_T4 , dig_P2 , dig_P3, dig_P4, dig_P5, dig_P6, dig_P7, dig_P8, dig_P9;
 		unsigned int dig_P1,dig_T1 ;
 		short oversampling, oversampling_t;
 		long signed int t_fine;
 		char error;
 };
 
+// BMP uses 0x76 or 0x77 depending on voltage on SDO. (see: https://github.com/watterott/BMP280-Breakout)
+// change default to 0x76 for easier hardware setup
 #define BMP280_ADDR 0x76 // 7-bit address
 
 #define	BMP280_REG_CONTROL 0xF4
@@ -113,10 +115,10 @@ class BMP280
 #define BMP280_REG_RESULT_TEMPRERATURE 0xFA		// 0xFA(msb) , 0xFB(lsb) , 0xFC(xlsb) : stores the temperature data.
 
 #define	BMP280_COMMAND_TEMPERATURE 0x2E
-#define	BMP280_COMMAND_PRESSURE0 0x25  			 
-#define	BMP280_COMMAND_PRESSURE1 0x29  			
-#define	BMP280_COMMAND_PRESSURE2 0x2D    
-#define	BMP280_COMMAND_PRESSURE3 0x31    
-#define	BMP280_COMMAND_PRESSURE4 0x5D    
+#define	BMP280_COMMAND_PRESSURE0 0x25
+#define	BMP280_COMMAND_PRESSURE1 0x29
+#define	BMP280_COMMAND_PRESSURE2 0x2D
+#define	BMP280_COMMAND_PRESSURE3 0x31
+#define	BMP280_COMMAND_PRESSURE4 0x5D
 
 #endif
