@@ -75,7 +75,7 @@ int windrichtungVolt[] = {320, 410, 450, 620, 900, 1190, 1400, 1980, 2250, 2930,
 // Werte in Grad laut Datenblatt, momentan noch nicht genutzt,
 //int windRichtungGrad[] = {113, 68, 90, 158, 135, 203, 180, 23, 45, 248, 225, 338, 0, 292, 270, 315};
 
-unsigned int windrichtungVoltSumme = 0; // 
+unsigned long windrichtungVoltSumme = 0; // 
 
 long intervall = 1000; // eine Messung pro Minute (60.000 ms)
 int zaehler1 = 0;
@@ -117,9 +117,11 @@ void loop (){
   if ((zeit1Neu - zeit1Alt) >= intervall) // Abfrage-Intervall ueberschritten?, wenn ja ...
   {  
      sensorWertNeu = analogRead(windrichtungsPin); // lesen Sensor an Pin 3 analog 
-     sensorVolt1 = map(sensorWertNeu, 1, 1024, 1, 5000); // wandeln Werte aus den Bereich 0 - 1024 in 0 bis 5000 um
+     sensorVolt1 = map(sensorWertNeu, 0, 1024, 0, 4780); // wandeln Werte aus den Bereich 0 - 1024 in 0 bis 5000 um
+     if(sensorVolt1 == 4140) {
+       sensorVolt1 = 4780;
+     }
      windrichtungVoltSumme = windrichtungVoltSumme + sensorVolt1; // bilden Gesamtsumme
-     
      /* nur zur Kontrolle     
      Serial.print("Messung: ");
      Serial.print(zaehler1);
@@ -132,7 +134,7 @@ void loop (){
      */
      if (zaehler1 == 14) // wenn (0 bis 14 =) 15 Werte gelesen ...
      {
-       windrichtungVoltSumme = windrichtungVoltSumme / 5; // bilden Durschnitt
+       windrichtungVoltSumme = windrichtungVoltSumme / 15; // bilden Durschnitt
        for (int zaehler3 = 0; zaehler3 <= 15; zaehler3++) // durchlaufen Array fuer Werte in Volt ...bis Bedingung erfüllt
        { 
            if (windrichtungVoltSumme <= windrichtungVolt[zaehler3]) // bis richtiger Wert gefunden
@@ -166,7 +168,6 @@ void loop (){
  
 void windgeschwmess()
 {   
-    
    windGeschwMessStart = millis(); // aktualieren Startzeit fuer Messung
    windGeschwMessStartAlt = windGeschwMessStart; // merken uns Startzeit 
    windGeschwPinZaehler = 0; // setzen Pulszaehler auf 0
@@ -188,9 +189,8 @@ void windgeschwmess()
    
    // windGeschw =  ((windGeschwPinZaehler * 24) / 10) / (windGeschwMessZeit / 1000); // ein Impuls = 2,4 km/h
    
-   windGeschw =  ((windGeschwPinZaehler * 24) / 10) + 0.5; // ein Impuls = 2,4 km/h, aufgerundet
+   windGeschw =  windGeschwPinZaehler * 2.4; // ein Impuls = 2,4 km/h, aufgerundet
    windGeschw = (windGeschw / (windGeschwMessZeit / 1000)); // teilen durch Messzeit in Sekunden
-   
    // ermitteln windstaerke nach Beaufort
    if (windGeschw >= 0 && windGeschw <= 2)
    {
@@ -261,7 +261,7 @@ void printMeasurement() {
   float hum = sht1x.readHumidity();
   
   Serial.print("SPD: ");
-  Serial.print(windGeschw);
+  Serial.print(beaufort);
   Serial.print(";");
   Serial.print("DIR: ");
   Serial.print(windText1);
@@ -290,11 +290,11 @@ void printMeasurement() {
         Serial.print(P,2);
       }
       else {
-        Serial.println("Error.");
+        Serial.println("-1");
       }
   }
   else {
-    Serial.println("Error.");
+    Serial.println("-1");
   }
   Serial.print(";");
   Serial.print("LUX: ");
