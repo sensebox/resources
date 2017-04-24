@@ -23,16 +23,49 @@
 
 BMP280::BMP280()
 {
-	//do nothing
+	i2c_addr = BMP280_ADDR1;
 }
+
+BMP280::BMP280(uint8_t address)
+{
+	i2c_addr = address;
+}
+
 /*
 *	Initialize library and coefficient for measurements
 */
 char BMP280::begin() 
 {
-	
+	int i;
+
 	// Start up the Arduino's "wire" (I2C) library:
 	Wire.begin();
+
+  // test I2C address
+  Wire.beginTransmission(i2c_addr);
+  i = Wire.endTransmission();
+  if(i != 0) // error device not found
+  {
+    for(int tries=3; tries!=0; tries--)
+    {
+      Wire.beginTransmission(BMP280_ADDR1);
+      i = Wire.endTransmission();
+      if(i == 0)
+      {
+        i2c_addr = BMP280_ADDR1;
+        break;
+      }
+      delay(20); // wait 20ms
+      Wire.beginTransmission(BMP280_ADDR2);
+      i = Wire.endTransmission();
+      if(i == 0)
+      {
+        i2c_addr = BMP280_ADDR2;
+        break;
+      }
+      delay(20); // wait 20ms
+    }
+  }
 
 	// The BMP280 includes factory calibration data stored on the device.
 	// Each device has different numbers, these must be retrieved and
@@ -116,16 +149,16 @@ char BMP280::readUInt(char address, unsigned int &value)
 ** @param : length = number of bytes to read
 */
 
-char BMP280::readBytes(unsigned char *values, char length)
+char BMP280::readBytes(unsigned char *values, unsigned char length)
 {
-	char x;
+	unsigned char x;
 
-	Wire.beginTransmission(BMP280_ADDR);
+	Wire.beginTransmission(i2c_addr);
 	Wire.write(values[0]);
 	error = Wire.endTransmission();
 	if (error == 0)
 	{
-		Wire.requestFrom(BMP280_ADDR,length);
+		Wire.requestFrom(i2c_addr, length);
 		while(Wire.available() != length) ; // wait until bytes are ready
 		for(x=0;x<length;x++)
 		{
@@ -140,10 +173,10 @@ char BMP280::readBytes(unsigned char *values, char length)
 ** @param : values = external array of data to write. Put starting register in values[0].
 ** @param : length = number of bytes to write
 */
-char BMP280::writeBytes(unsigned char *values, char length)
+char BMP280::writeBytes(unsigned char *values, unsigned char length)
 {
-	Wire.beginTransmission(BMP280_ADDR);
-	Wire.write(values,length);
+	Wire.beginTransmission(i2c_addr);
+	Wire.write(values, length);
 	error = Wire.endTransmission();
 	if (error == 0)
 		return(1);

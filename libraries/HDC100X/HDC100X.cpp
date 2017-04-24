@@ -19,7 +19,7 @@ Released under GNU GPL v2.0 license.
 //######-----------------------------------------------------------------------
 
 HDC100X::HDC100X(){
-	ownAddr = HDC100X_DEFAULT_ADDR;
+	ownAddr = HDC100X_ADDR1;
 	dataReadyPin = -1;
 }
 //-----------------------------------------------------------------------
@@ -38,6 +38,8 @@ HDC100X::HDC100X(bool addr0, bool addr1){
 //######-----------------------------------------------------------------------
 
 uint8_t HDC100X::begin(uint8_t mode, uint8_t tempRes, uint8_t humiRes, bool heaterState){
+	int i;
+
 	/* sets the mode and resolution and the state of the heater element.  care must be taken, because it will change the temperature reading
 	** in:
 	** mode: HDC100X_TEMP_HUMI
@@ -48,6 +50,49 @@ uint8_t HDC100X::begin(uint8_t mode, uint8_t tempRes, uint8_t humiRes, bool heat
 	** high byte of the configuration register
 	*/
 	Wire.begin();
+
+  // test I2C address
+  Wire.beginTransmission(ownAddr);
+  i = Wire.endTransmission();
+  if(i != 0) // error device not found
+  {
+    for(int tries=3; tries!=0; tries--)
+    {
+      Wire.beginTransmission(HDC100X_ADDR1);
+      i = Wire.endTransmission();
+      if(i == 0)
+      {
+        ownAddr = HDC100X_ADDR1;
+        break;
+      }
+      delay(20); // wait 20ms
+      Wire.beginTransmission(HDC100X_ADDR2);
+      i = Wire.endTransmission();
+      if(i == 0)
+      {
+        ownAddr = HDC100X_ADDR2;
+        break;
+      }
+      delay(20); // wait 20ms
+      Wire.beginTransmission(HDC100X_ADDR3);
+      i = Wire.endTransmission();
+      if(i == 0)
+      {
+        ownAddr = HDC100X_ADDR3;
+        break;
+      }
+      delay(20); // wait 20ms
+      Wire.beginTransmission(HDC100X_ADDR4);
+      i = Wire.endTransmission();
+      if(i == 0)
+      {
+        ownAddr = HDC100X_ADDR4;
+        break;
+      }
+      delay(20); // wait 20ms
+    }
+  }
+
 	HDCmode = mode;
 	return writeConfigData(mode|(tempRes<<2)|humiRes|(heaterState<<5));
 }
@@ -121,8 +166,8 @@ uint8_t HDC100X::setMode(uint8_t mode, uint8_t resolution){
 	*/
 	uint8_t tempReg = getConfigReg() & 0xA0;
 	HDCmode = mode;
-	if(mode == HDC100X_HUMI) 	return writeConfigData(tempReg|resolution);
-	else 						return writeConfigData(tempReg|(resolution<<2));
+	if(mode == HDC100X_HUMI) return writeConfigData(tempReg|resolution);
+	return writeConfigData(tempReg|(resolution<<2));
 }
 
 //######-----------------------------------------------------------------------
@@ -157,12 +202,16 @@ float HDC100X::getTemp(void){
 	// returns the a float number of the temperature in degrees Celsius
 	if(HDCmode == HDC100X_TEMP || HDCmode == HDC100X_TEMP_HUMI)
 		return ((float)getRawTemp()/65536.0*165.0-40.0);
+
+  return 0.0;
 }
 //-----------------------------------------------------------------------
 float HDC100X::getHumi(void){
 	// returns the a float number of the humidity in percent
 	if(HDCmode == HDC100X_HUMI || HDCmode == HDC100X_TEMP_HUMI)
 		return ((float)getRawHumi()/65536.0*100.0);
+
+  return 0.0;
 }
 
 //######-----------------------------------------------------------------------
@@ -172,12 +221,16 @@ uint16_t HDC100X::getRawTemp(void){
 	// returns the raw 16bit data of the temperature register
 	if(HDCmode == HDC100X_TEMP || HDCmode == HDC100X_TEMP_HUMI)	
 		return read2Byte(HDC100X_TEMP_REG);
+
+  return 0;
 }
 //-----------------------------------------------------------------------
 uint16_t HDC100X::getRawHumi(void){
 	// returns the raw 16bit data of the humidity register
 	if(HDCmode == HDC100X_HUMI || HDCmode == HDC100X_TEMP_HUMI)	
 		return read2Byte(HDC100X_HUMI_REG);
+
+  return 0;
 }
 
 //######-----------------------------------------------------------------------
@@ -198,8 +251,8 @@ uint16_t HDC100X::read2Byte(uint8_t reg){
 	** out:
 	** two byte of data from the defined register
 	*/
+  uint16_t data=0;
 	setRegister(reg);
-	uint16_t data;
 	Wire.requestFrom(ownAddr, 2U);
 	if(Wire.available()>=2){
 		data = Wire.read()<<8;
@@ -240,9 +293,3 @@ void HDC100X::setRegister(uint8_t reg){
 	Wire.endTransmission();
 	delay(10);	// wait a little so that the sensor can set its register
 }
-
-
-
-
-
-

@@ -21,7 +21,10 @@ Released under GNU GPL v2.0 license.
  #include "WProgram.h"
 #endif
 
-#define HDC100X_DEFAULT_ADDR		0x40
+#define HDC100X_ADDR1		0x43
+#define HDC100X_ADDR2		0x40
+#define HDC100X_ADDR3		0x41
+#define HDC100X_ADDR4		0x42
 
 #define HDC100X_TEMP_REG			0x00
 #define HDC100X_HUMI_REG			0x01
@@ -76,11 +79,11 @@ class HDC100X{
 		uint8_t writeConfigData(uint8_t config);
 		
 	private:
-  		uint8_t ownAddr;
+		uint8_t ownAddr;
 		uint8_t dataReadyPin;
 		uint8_t HDCmode;
-  		void setRegister(uint8_t reg);
+		void setRegister(uint8_t reg);
 
 };
 
-#endif _HDC100X_H_
+#endif //_HDC100X_H_

@@ -14,8 +14,8 @@
 	buy me italian pizza someday.
 */
 
-#ifndef BMP280_h
-#define BMP280_h
+#ifndef _BMP280_H_
+#define _BMP280_H_
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
@@ -27,6 +27,7 @@ class BMP280
 {
 	public:
 		BMP280(); // base type
+    BMP280(uint8_t address);
 
 		char begin();
 			// call pressure.begin() to initialize BMP280 before use
@@ -83,13 +84,13 @@ class BMP280
 			// value: external unsigned int for returned value (16 bits)
 			// returns 1 for success, 0 for fail, with result in value
 
-		char readBytes(unsigned char *values, char length);
+		char readBytes(unsigned char *values, unsigned char length);
 			// read a number of bytes from a BMP280 register
 			// values: array of char with register address in first location [0]
 			// length: number of bytes to read back
 			// returns 1 for success, 0 for fail, with read bytes in values[] array
 
-		char writeBytes(unsigned char *values, char length);
+		char writeBytes(unsigned char *values, unsigned char length);
 			// write a number of bytes to a BMP280 register (and consecutive subsequent registers)
 			// values: array of char with register address in first location [0]
 			// length: number of bytes to write
@@ -99,16 +100,17 @@ class BMP280
 			//get uncalibrated UP and UT value.
 
 
+    unsigned char i2c_addr;
 		int dig_T2 , dig_T3 , dig_T4 , dig_P2 , dig_P3, dig_P4, dig_P5, dig_P6, dig_P7, dig_P8, dig_P9;
-		unsigned int dig_P1,dig_T1 ;
+		unsigned int dig_P1,dig_T1;
 		short oversampling, oversampling_t;
 		long signed int t_fine;
 		char error;
 };
 
-// BMP uses 0x76 or 0x77 depending on voltage on SDO. (see: https://github.com/watterott/BMP280-Breakout)
-// change default to 0x76 for easier hardware setup
-#define BMP280_ADDR 0x76 // 7-bit address
+// BMP uses 0x76 or 0x77 depending on voltage on SDO.
+#define BMP280_ADDR1 0x77 // 7-bit address
+#define BMP280_ADDR2 0x76 // 7-bit address
 
 #define	BMP280_REG_CONTROL 0xF4
 #define	BMP280_REG_RESULT_PRESSURE 0xF7			// 0xF7(msb) , 0xF8(lsb) , 0xF9(xlsb) : stores the pressure data.
@@ -121,4 +123,4 @@ class BMP280
 #define	BMP280_COMMAND_PRESSURE3 0x31
 #define	BMP280_COMMAND_PRESSURE4 0x5D
 
-#endif
+#endif //_BMP280_H_
