@@ -41,7 +41,7 @@ WiFiClient::WiFiClient(uint8_t sock, uint8_t parentsock)
 	_socket = sock;
 	_flag = SOCKET_BUFFER_FLAG_CONNECTED;
 	if (parentsock) {
-		_flag |= ((uint32_t)(parentsock - 1)) << SOCKET_BUFFER_FLAG_PARENT_SOCKET_POS;
+		_flag |= ((uint32_t)parentsock) << SOCKET_BUFFER_FLAG_PARENT_SOCKET_POS;
 	}
 	_head = 0;
 	_tail = 0;
@@ -152,7 +152,7 @@ int WiFiClient::connect(IPAddress ip, uint16_t port, uint8_t opt, const uint8_t 
 		_socket = -1;
 		return 0;
 	}
-	
+
 	// Wait for connection or timeout:
 	unsigned long start = millis();
 	while (!IS_CONNECTED && millis() - start < 20000) {
@@ -163,6 +163,8 @@ int WiFiClient::connect(IPAddress ip, uint16_t port, uint8_t opt, const uint8_t 
 		_socket = -1;
 		return 0;
 	}
+
+	WiFi._client[_socket] = this;
 
 	return 1;
 }

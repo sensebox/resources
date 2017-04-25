@@ -20,7 +20,11 @@
 #ifndef WIFI_H
 #define WIFI_H
 
-#define WIFI_FIRMWARE_REQUIRED "19.4.4"
+#define WIFI_FIRMWARE_LATEST_MODEL_A "19.4.4"
+#define WIFI_FIRMWARE_LATEST_MODEL_B "19.5.2"
+
+// for backwards compatibility
+#define WIFI_FIRMWARE_REQUIRED WIFI_FIRMWARE_LATEST_MODEL_B
 
 #include <Arduino.h>
 
@@ -41,7 +45,12 @@ typedef enum {
 	WL_CONNECTED,
 	WL_CONNECT_FAILED,
 	WL_CONNECTION_LOST,
-	WL_DISCONNECTED
+	WL_DISCONNECTED,
+	WL_AP_LISTENING,
+	WL_AP_CONNECTED,
+	WL_AP_FAILED,
+	WL_PROVISIONING,
+	WL_PROVISIONING_FAILED
 } wl_status_t;
 
 /* Encryption modes */
@@ -62,11 +71,10 @@ typedef enum {
 } wl_mode_t;
 
 typedef enum {
-	WL_PING_SUCCESS = 0,
-	WL_PING_DEST_UNREACHABLE,
-	WL_PING_TIMEOUT,
-	WL_PING_UNKNOWN_HOST,
-	WL_PING_ERROR
+	WL_PING_DEST_UNREACHABLE = -1,
+	WL_PING_TIMEOUT = -2,
+	WL_PING_UNKNOWN_HOST = -3,
+	WL_PING_ERROR = -4
 } wl_ping_result_t;
 
 class WiFiClass
@@ -77,15 +85,18 @@ public:
 	uint32_t _gateway;
 	int _dhcp;
 	uint32_t _resolve;
-	byte *_bssid;
+	byte *_remoteMacAddress;
 	wl_mode_t _mode;
 	wl_status_t _status;
 	char _scan_ssid[M2M_MAX_SSID_LEN];
 	uint8_t _scan_auth;
+	uint8_t _scan_channel;
 	char _ssid[M2M_MAX_SSID_LEN];
 	WiFiClient *_client[TCP_SOCK_MAX];
 
 	WiFiClass();
+
+	void setPins(int8_t cs, int8_t irq, int8_t rst, int8_t en = -1);
 
 	int init();
 	
@@ -114,9 +125,11 @@ public:
 	uint8_t beginAP(const char *ssid, uint8_t channel);
 	uint8_t beginAP(const char *ssid, uint8_t key_idx, const char* key);
 	uint8_t beginAP(const char *ssid, uint8_t key_idx, const char* key, uint8_t channel);
+	uint8_t beginAP(const char *ssid, const char* key);
+	uint8_t beginAP(const char *ssid, const char* key, uint8_t channel);
 
-	uint8_t beginProvision(char *ssid, char *url);
-	uint8_t beginProvision(char *ssid, char *url, uint8_t channel);
+	uint8_t beginProvision();
+	uint8_t beginProvision(uint8_t channel);
 
 	uint32_t provisioned();
 
@@ -124,6 +137,8 @@ public:
 	void config(IPAddress local_ip, IPAddress dns_server);
 	void config(IPAddress local_ip, IPAddress dns_server, IPAddress gateway);
 	void config(IPAddress local_ip, IPAddress dns_server, IPAddress gateway, IPAddress subnet);
+
+	void hostname(const char* name);
 
 	void disconnect();
 	void end();
@@ -137,27 +152,40 @@ public:
 	int32_t RSSI();
 	uint8_t encryptionType();
 	uint8_t* BSSID(uint8_t* bssid);
+	uint8_t* APClientMacAddress(uint8_t* mac);
 	int8_t scanNetworks();
 	char* SSID(uint8_t pos);
 	int32_t RSSI(uint8_t pos);
 	uint8_t encryptionType(uint8_t pos);
+	uint8_t* BSSID(uint8_t pos, uint8_t* bssid);
+	uint8_t channel(uint8_t pos);
 
 	uint8_t status();
 
 	int hostByName(const char* hostname, IPAddress& result);
 	int hostByName(const String &hostname, IPAddress& result) { return hostByName(hostname.c_str(), result); }
 
-	uint8_t ping(const char* hostname, uint8_t ttl = 128);
-	uint8_t ping(const String &hostname, uint8_t ttl = 128);
-	uint8_t ping(IPAddress host, uint8_t ttl = 128);
-	
+	int ping(const char* hostname, uint8_t ttl = 128);
+	int ping(const String &hostname, uint8_t ttl = 128);
+	int ping(IPAddress host, uint8_t ttl = 128);
+
+	unsigned long getTime();
+
 	void refresh(void);
+
+	void lowPowerMode(void);
+	void maxLowPowerMode(void);
+	void noLowPowerMode(void);
 
 private:
 	int _init;
 	char _version[9];
+
 	uint8_t startConnect(const char *ssid, uint8_t u8SecType, const void *pvAuthInfo);
 	uint8_t startAP(const char *ssid, uint8_t u8SecType, const void *pvAuthInfo, uint8_t channel);
+	uint8_t* remoteMacAddress(uint8_t* remoteMacAddress);
+
+	uint8_t startProvision(const char *ssid, const char *url, uint8_t channel);
 };
 
 extern WiFiClass WiFi;

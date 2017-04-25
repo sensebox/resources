@@ -94,7 +94,7 @@ uint8_t WiFiUDP::begin(uint16_t port)
 	return 1;
 }
 
-uint8_t WiFiUDP::beginMulti(IPAddress ip, uint16_t port)
+uint8_t WiFiUDP::beginMulticast(IPAddress ip, uint16_t port)
 {
 	uint32_t multiIp = ip;
 
@@ -134,9 +134,7 @@ int WiFiUDP::beginPacket(const char *host, uint16_t port)
 {
 	IPAddress ip;
 	if (WiFi.hostByName(host, ip)) {
-		_sndIP = ip;
-		_sndPort = port;
-		_sndSize = 0;
+		return beginPacket(ip, port);
 	}
 
 	return 0;

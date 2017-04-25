@@ -1,18 +1,19 @@
 /*
 
- This example  prints the WiFi shield's MAC address, and
- scans for available WiFi networks using the WiFi shield.
- Every ten seconds, it scans again. It doesn't actually
- connect to any network, so no encryption scheme is specified.
+  This example  prints the WiFi 101 shield or MKR1000 MAC address, and
+  scans for available WiFi networks using the WiFi 101 shield or MKR1000 board.
+  Every ten seconds, it scans again. It doesn't actually
+  connect to any network, so no encryption scheme is specified.
+  BSSID and WiFi channel are printed
 
- Circuit:
- * WiFi shield attached
+  Circuit:
+   WiFi 101 shield attached or MKR1000 board
 
- created 13 July 2010
- by dlf (Metodo2 srl)
- modified 21 Junn 2012
- by Tom Igoe and Jaymes Dec
- */
+  This example is based on ScanNetworks
+
+  created 1 Mar 2017
+  by Arturo Guadalupi
+*/
 
 
 #include <SPI.h>
@@ -36,6 +37,7 @@ void setup() {
   printMacAddress();
 
   // scan for existing networks:
+  Serial.println();
   Serial.println("Scanning available networks...");
   listNetworks();
 }
@@ -54,17 +56,17 @@ void printMacAddress() {
   // print your MAC address:
   WiFi.macAddress(mac);
   Serial.print("MAC: ");
-  Serial.print(mac[5], HEX);
+  print2Digits(mac[5]);
   Serial.print(":");
-  Serial.print(mac[4], HEX);
+  print2Digits(mac[4]);
   Serial.print(":");
-  Serial.print(mac[3], HEX);
+  print2Digits(mac[3]);
   Serial.print(":");
-  Serial.print(mac[2], HEX);
+  print2Digits(mac[2]);
   Serial.print(":");
-  Serial.print(mac[1], HEX);
+  print2Digits(mac[1]);
   Serial.print(":");
-  Serial.println(mac[0], HEX);
+  print2Digits(mac[0]);
 }
 
 void listNetworks() {
@@ -73,48 +75,75 @@ void listNetworks() {
   int numSsid = WiFi.scanNetworks();
   if (numSsid == -1)
   {
-    Serial.println("Couldn't get a wifi connection");
+    Serial.println("Couldn't get a WiFi connection");
     while (true);
   }
 
   // print the list of networks seen:
-  Serial.print("number of available networks:");
+  Serial.print("number of available networks: ");
   Serial.println(numSsid);
 
   // print the network number and name for each network found:
   for (int thisNet = 0; thisNet < numSsid; thisNet++) {
-    Serial.print(thisNet);
+    Serial.print(thisNet + 1);
     Serial.print(") ");
-    Serial.print(WiFi.SSID(thisNet));
-    Serial.print("\tSignal: ");
+    Serial.print("Signal: ");
     Serial.print(WiFi.RSSI(thisNet));
     Serial.print(" dBm");
+    Serial.print("\tChannel: ");
+    Serial.print(WiFi.channel(thisNet));
+    byte bssid[6];
+    Serial.print("\t\tBSSID: ");
+    printBSSID(WiFi.BSSID(thisNet, bssid));
     Serial.print("\tEncryption: ");
     printEncryptionType(WiFi.encryptionType(thisNet));
+    Serial.print("\t\tSSID: ");
+    Serial.println(WiFi.SSID(thisNet));
     Serial.flush();
   }
+  Serial.println();
+}
+
+void printBSSID(byte bssid[]) {
+  print2Digits(bssid[5]);
+  Serial.print(":");
+  print2Digits(bssid[4]);
+  Serial.print(":");
+  print2Digits(bssid[3]);
+  Serial.print(":");
+  print2Digits(bssid[2]);
+  Serial.print(":");
+  print2Digits(bssid[1]);
+  Serial.print(":");
+  print2Digits(bssid[0]);
 }
 
 void printEncryptionType(int thisType) {
   // read the encryption type and print out the name:
   switch (thisType) {
     case ENC_TYPE_WEP:
-      Serial.println("WEP");
+      Serial.print("WEP");
       break;
     case ENC_TYPE_TKIP:
-      Serial.println("WPA");
+      Serial.print("WPA");
       break;
     case ENC_TYPE_CCMP:
-      Serial.println("WPA2");
+      Serial.print("WPA2");
       break;
     case ENC_TYPE_NONE:
-      Serial.println("None");
+      Serial.print("None");
       break;
     case ENC_TYPE_AUTO:
-      Serial.println("Auto");
+      Serial.print("Auto");
       break;
   }
 }
 
+void print2Digits(byte thisByte) {
+  if (thisByte < 0xF) {
+    Serial.print("0");
+  }
+  Serial.print(thisByte, HEX);
+}
 
 

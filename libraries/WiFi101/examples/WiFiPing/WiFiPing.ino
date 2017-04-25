@@ -1,24 +1,24 @@
 /*
 
- This example connects to a encrypted Wifi network (WPA/WPA2).
- Then it prints the  MAC address of the Wifi shield,
- the IP address obtained, and other network details.
- Then it continuously pings given host specified by IP Address or name.
+  This example connects to a encrypted WiFi network (WPA/WPA2).
+  Then it prints the  MAC address of the WiFi shield,
+  the IP address obtained, and other network details.
+  Then it continuously pings given host specified by IP Address or name.
 
- Circuit:
- * WiFi shield attached / MKR1000
+  Circuit:
+   WiFi shield attached / MKR1000
 
- created 13 July 2010
- by dlf (Metodo2 srl)
- modified 09 June 2016
- by Petar Georgiev
- */
+  created 13 July 2010
+  by dlf (Metodo2 srl)
+  modified 09 June 2016
+  by Petar Georgiev
+*/
 #include <SPI.h>
 #include <WiFi101.h>
 
 char ssid[] = "yourNetwork";     //  your network SSID (name)
 char pass[] = "secretPassword";  // your network password
-int status = WL_IDLE_STATUS;     // the Wifi radio's status
+int status = WL_IDLE_STATUS;     // the WiFi radio's status
 
 // Specify IP address or hostname
 String hostName = "www.google.com";
@@ -38,7 +38,7 @@ void setup() {
     while (true);
   }
 
-  // attempt to connect to Wifi network:
+  // attempt to connect to WiFi network:
   while ( status != WL_CONNECTED) {
     Serial.print("Attempting to connect to WPA SSID: ");
     Serial.println(ssid);
@@ -50,10 +50,9 @@ void setup() {
   }
 
   // you're connected now, so print out the data:
-  Serial.print("You're connected to the network");
+  Serial.println("You're connected to the network");
   printCurrentNet();
-  printWifiData();
-
+  printWiFiData();
 }
 
 void loop() {
@@ -63,22 +62,29 @@ void loop() {
 
   pingResult = WiFi.ping(hostName);
 
-  if (pingResult == WL_PING_SUCCESS) {
-    Serial.println("SUCCESS!");
+  if (pingResult >= 0) {
+    Serial.print("SUCCESS! RTT = ");
+    Serial.print(pingResult);
+    Serial.println(" ms");
   } else {
     Serial.print("FAILED! Error code: ");
     Serial.println(pingResult);
   }
 
-  delay(3000);
+  delay(5000);
 }
 
-void printWifiData() {
+void printWiFiData() {
   // print your WiFi shield's IP address:
   IPAddress ip = WiFi.localIP();
-  Serial.print("IP Address: ");
+  Serial.print("IP address : ");
   Serial.println(ip);
-  Serial.println(ip);
+
+  Serial.print("Subnet mask: ");
+  Serial.println((IPAddress)WiFi.subnetMask());
+
+  Serial.print("Gateway IP : ");
+  Serial.println((IPAddress)WiFi.gatewayIP());
 
   // print your MAC address:
   byte mac[6];
@@ -121,12 +127,12 @@ void printCurrentNet() {
 
   // print the received signal strength:
   long rssi = WiFi.RSSI();
-  Serial.print("signal strength (RSSI):");
+  Serial.print("signal strength (RSSI): ");
   Serial.println(rssi);
 
   // print the encryption type:
   byte encryption = WiFi.encryptionType();
-  Serial.print("Encryption Type:");
+  Serial.print("Encryption Type: ");
   Serial.println(encryption, HEX);
   Serial.println();
 }

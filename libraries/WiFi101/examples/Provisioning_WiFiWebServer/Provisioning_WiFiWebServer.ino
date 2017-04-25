@@ -1,30 +1,21 @@
 /*
- MDNS WiFi Web Server
+  WiFi Web Server
 
- A simple web server that shows the value of the analog input pins,
- and exposes itself on the MDNS name 'wifi101.local'.
+  A simple web server that shows the value of the analog input pins.
+  using a WiFi shield.
 
- On Linux (like Ubuntu 15.04) or OSX you can access the web page
- on the device in a browser at 'http://wifi101.local/'.
+  This example is written to configure the WiFi settings using provisioning mode.
+  It also sets up an mDNS server so the IP address of the board doesn't have to
+  be obtained via the serial monitor.
 
- On Windows you'll first need to install the Bonjour Printer Services
- from:
-   https://support.apple.com/kb/dl999?locale=en_US
- Then you can access the device in a browser at 'http://wifi101.local/'.
+  Circuit:
+   WiFi shield attached
+   Analog inputs attached to pins A0 through A5 (optional)
 
- This example is written for a network using WPA encryption. For
- WEP or WPA, change the WiFi.begin() call accordingly.
-
- Circuit:
- * WiFi shield attached
- * Analog inputs attached to pins A0 through A5 (optional)
-
- created 13 July 2010
- by dlf (Metodo2 srl)
- modified 31 May 2012
- by Tom Igoe
- modified 27 January 2016
- by Tony DiCola
+  created 13 July 2010
+  by dlf (Metodo2 srl)
+  modified 31 May 2012
+  by Tom Igoe
 
 */
 
@@ -32,28 +23,22 @@
 #include <WiFi101.h>
 #include <WiFiMDNSResponder.h>
 
-char ssid[] = "yourNetwork";      // your network SSID (name)
-char pass[] = "secretPassword";   // your network password
-int keyIndex = 0;                 // your network key Index number (needed only for WEP)
+const int ledPin = 6; // LED pin for connectivity status indicator
 
 char mdnsName[] = "wifi101"; // the MDNS name that the board will respond to
+                             // after WiFi settings have been provisioned
 // Note that the actual MDNS name will have '.local' after
 // the name above, so "wifi101" will be accessible on
 // the MDNS name "wifi101.local".
 
-int status = WL_IDLE_STATUS;
+WiFiServer server(80);
 
 // Create a MDNS responder to listen and respond to MDNS name requests.
 WiFiMDNSResponder mdnsResponder;
 
-WiFiServer server(80);
-
 void setup() {
-  //Initialize serial and wait for port to open:
+  //Initialize serial:
   Serial.begin(9600);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
 
   // check for the presence of the shield:
   if (WiFi.status() == WL_NO_SHIELD) {
@@ -62,18 +47,28 @@ void setup() {
     while (true);
   }
 
-  // attempt to connect to WiFi network:
-  while ( status != WL_CONNECTED) {
-    Serial.print("Attempting to connect to SSID: ");
-    Serial.println(ssid);
-    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-    status = WiFi.begin(ssid, pass);
+  // configure the LED pin for output mode
+  pinMode(ledPin, OUTPUT);
 
-    // wait 10 seconds for connection:
-    delay(10000);
+  // Start in provisioning mode:
+  //  1) This will try to connect to a previously associated access point.
+  //  2) If this fails, an access point named "wifi101-XXXX" will be created, where XXXX
+  //     is the last 4 digits of the boards MAC address. Once you are connected to the access point,
+  //     you can configure an SSID and password by visiting http://wifi101/
+  WiFi.beginProvision();
+
+  while (WiFi.status() != WL_CONNECTED) {
+    // wait while not connected
+
+    // blink the led to show an unconnected status
+    digitalWrite(ledPin, HIGH);
+    delay(500);
+    digitalWrite(ledPin, LOW);
+    delay(500);
   }
-  // you're connected now, so print out the status:
-  printWiFiStatus();
+
+  // connected, make the LED stay on
+  digitalWrite(ledPin, HIGH);
 
   server.begin();
 
@@ -88,6 +83,9 @@ void setup() {
   Serial.print("Server listening at http://");
   Serial.print(mdnsName);
   Serial.println(".local/");
+
+  // you're connected now, so print out the status:
+  printWiFiStatus();
 }
 
 
@@ -145,7 +143,7 @@ void loop() {
 
     // close the connection:
     client.stop();
-    Serial.println("client disconnected");
+    Serial.println("client disonnected");
   }
 }
 
@@ -166,3 +164,4 @@ void printWiFiStatus() {
   Serial.print(rssi);
   Serial.println(" dBm");
 }
+
