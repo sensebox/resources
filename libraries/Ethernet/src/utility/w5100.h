@@ -12,7 +12,8 @@
 
 #include <SPI.h>
 
-typedef uint8_t SOCKET;
+typedef signed char sint8;
+typedef sint8 SOCKET;
 
 //#define W5100_ETHERNET_SHIELD // Arduino Ethenret Shield and Compatibles ...
 //#define W5200_ETHERNET_SHIELD // WIZ820io, W5200 Ethernet Shield 
