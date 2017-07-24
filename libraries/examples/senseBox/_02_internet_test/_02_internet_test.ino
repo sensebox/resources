@@ -9,7 +9,7 @@
 
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-char server[] = "www.opensensemap.org";
+char server[] = "internet-test.opensensemap.org";
 IPAddress ip(192, 168, 0, 42);
 EthernetClient client;
 
@@ -29,7 +29,7 @@ void setup() {
     Serial.println("verbunden!");
     Serial.println();
     // Make a HTTP request:
-    client.println("GET /stats HTTP/1.1");
+    client.println("GET / HTTP/1.1");
     client.print("Host: ");
     client.println(server);
     client.println("Connection: close");

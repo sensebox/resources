@@ -1,4 +1,3 @@
-
 #include <WiFi101.h>
 
 char ssid[] = "";      //  your network SSID (name)
@@ -8,7 +7,7 @@ int status = WL_IDLE_STATUS;
 // Initialize the Wifi client library
 WiFiClient client;
 // server address:
-char server[] = "opensensemap.org";
+char server[] = "internet-test.opensensemap.org";
 
 void setup() {
   //Initialize serial and wait for port to open:
@@ -32,11 +31,11 @@ void setup() {
     delay(10000);
 
     // if you get a connection, report back via serial:
-    if (client.connect(server, 8000)) {
+    if (client.connect(server, 80)) {
       Serial.println("verbunden!");
       Serial.println();
       // Make a HTTP request:
-      client.println("GET /stats HTTP/1.1");
+      client.println("GET / HTTP/1.1");
       client.print("Host: ");
       client.println(server);
       client.println("Connection: close");
