@@ -1,11 +1,11 @@
 /*
- * Jan Wirwahn, Institute for Geoinformatics, University of Muenster
- * July 2015
- * Network test for SenseBox Home
+ * Institute for Geoinformatics, University of Muenster
+ * Oct. 2017
+ * Network test for senseBox:home
  */
 
 #include <SPI.h>
-#include <Ethernet.h>
+#include <Ethernet2.h>
 
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
