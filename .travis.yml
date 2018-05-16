@@ -8,15 +8,12 @@ before_install:
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
 script:
-  - zip -9 -y -r -q $HOME/senseBox_Libraries.zip ./libraries/
-  - ls -la $HOME
-  - ls -la ./libraries/libraries/SenseBox-MCU
-  - echo $HOME
+  - cd ./libraries
+  - zip -9 -y -r -q $HOME/senseBox_Libraries.zip ./
 deploy:
   provider: releases
   api_key:
     secure: cFm9TN9B4E76DoScKj4ytiXhSIa29HwY3094WeUEp4fWedlswsAKADQU9BNfTGrTHOjU/HjBsertDF3umpgXQg4gNRiO2YvsCKFC4Zegda/TkLvWXp5QihK6Vjj2bTVuMGUTJL7/Pl2bMyaUh8nSWcry/Zy98karnCK08+qgeZLx75iTfAA/M6+ru0WCu8/qjxfg09D1b6eRVzn5/clIklGrSPVVeDbVLiAfsL7nqkpb5GjErlKUZH+6SfNORrKBU7dP+KTk1kkxyhsMlmlt95EYM/KHT4XOWiOb8HqdUySyodQSyr2XXxwOa20JEzTduJhrk0/nYYDHlCJn8f526nMoI1xfMdDqWxn+9zSmXagVktKB7GFk5lOq+D6IOiKD1/1zjgG3JONsLDeQ6Q027Cop7CkYJLTh0NYuLG8RfkfHF3+KRUUMgoukN4a2XVQJtK2cTs5EyxRV3lQaQY/ekgWCliifXQy/52G39zJx7wAgADIKBf7qlC94PUpRiDfTeKNpuCsnaeICHLK/aKYB8hCkQcC8KejO0WCFEvGZUiStU2dMgoKG+6+K0icC3/TSB4sS/zEZ7TDOQdYysY6iphfI0MQpxXOK9c/xscTiR9GCLgoWXjs32mM6j90XIztYcWhEjPJJm0oBf+FbdWk5Bm8Ci1pidwiuxE3ojuWOmWg=
-  # file_glob: true
   file: $HOME/senseBox_Libraries.zip
   skip_cleanup: true
   on:
