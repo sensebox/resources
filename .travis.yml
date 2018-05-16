@@ -2,8 +2,11 @@ sudo: false
 language: node_js
 node_js:
 - '6'
-before_script:
-- git submodule update --init --recursive
+git:
+  submodules: false
+before_install:
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
 script:
 - zip -9 -y -r -q $HOME/senseBox_Libraries.zip ./libraries/
 deploy:
