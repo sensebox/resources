@@ -10,7 +10,7 @@ before_install:
 script:
   - zip -9 -y -r -q $HOME/senseBox_Libraries.zip ./libraries/
   - ls -la $HOME
-  - ls -la ./libraries/libraries/SenseBox_MCU
+  - ls -la ./libraries/libraries/SenseBox-MCU
 deploy:
   provider: releases
   api_key:
