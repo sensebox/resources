@@ -1,0 +1,3 @@
+[submodule "libraries/libraries/SenseBox-MCU"]
+	path = libraries/libraries/SenseBox-MCU
+	url = git@github.com:sensebox/SenseBoxMCU-Lib.git
