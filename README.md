@@ -23,11 +23,11 @@ You will find the submodule under `libraries/libraries/SenseBox-MCU`.
 ## Changelog
 See [`Changelog.md`](CHANGELOG.md) for detailed information.
 
+## Contribution
+Please have a look at [`Contributing`](CONTRIBUTING.md) for detailed information.
+
 #### further libraries
 - [WiFi101](https://github.com/arduino-libraries/WiFi101/releases/tag/0.14.3)
 - modified Arduino Ethernet lib
 - [RV8523 realtime clock](https://github.com/watterott/Arduino-Libs/tree/master/RV8523)
 - [Ethernet2](https://github.com/adafruit/Ethernet2)
-
-added prepare-commit-msg hook to skip builds in travis
-asfdasdasdasdasdadasd
