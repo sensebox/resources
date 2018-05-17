@@ -1,4 +1,4 @@
-# senseBox resources
+# senseBox resources [![Build Status](https://travis-ci.org/sensebox/resources.svg?branch=master)](https://travis-ci.org/sensebox/resources) [![GitHub release](https://img.shields.io/github/release/sensebox/resources.svg)](https://github.com/sensebox/resources)
 This repo contains additional or customized Arduino libraries and datasheets for senseBox sensors, as well as common assets such as logos and documentational images.
 
 ## Libraries
