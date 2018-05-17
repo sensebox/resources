@@ -29,3 +29,4 @@ See [`Changelog.md`](CHANGELOG.md) for detailed information.
 - [RV8523 realtime clock](https://github.com/watterott/Arduino-Libs/tree/master/RV8523)
 - [Ethernet2](https://github.com/adafruit/Ethernet2)
 
+added prepare-commit-msg hook to skip builds in travis
