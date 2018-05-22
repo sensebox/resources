@@ -1,3 +1,6 @@
 [submodule "libraries/libraries/WiFi101"]
 	path = libraries/libraries/WiFi101
 	url = https://github.com/arduino-libraries/WiFi101.git
+[submodule "libraries/libraries/SenseBox-MCU"]
+	path = libraries/libraries/SenseBox-MCU
+	url = git@github.com:sensebox/SenseBoxMCU-Lib.git
