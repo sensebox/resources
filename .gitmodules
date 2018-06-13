@@ -4,3 +4,6 @@
 [submodule "libraries/libraries/SenseBox-MCU"]
 	path = libraries/libraries/SenseBox-MCU
 	url = git@github.com:sensebox/SenseBoxMCU-Lib.git
+[submodule "libraries/libraries/SSD1306-Plot-Library"]
+	path = libraries/libraries/SSD1306-Plot-Library
+	url = git@github.com:sensebox/SSD1306-Plot-Library.git
