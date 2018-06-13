@@ -7,3 +7,6 @@
 [submodule "libraries/libraries/SSD1306-Plot-Library"]
 	path = libraries/libraries/SSD1306-Plot-Library
 	url = git@github.com:sensebox/SSD1306-Plot-Library.git
+[submodule "libraries/libraries/TinyGPSPlus"]
+	path = libraries/libraries/TinyGPSPlus
+	url = git@github.com:mikalhart/TinyGPSPlus.git
