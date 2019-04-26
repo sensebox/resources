@@ -1,0 +1,83 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="arduino_functions" id="5KebY,-ltvxB7K^El}1(" x="30" y="34">
+    <statement name="SETUP_FUNC">
+      <block type="sensebox_wifi" id="G27|?@m)9T+?m-pP+:uq">
+        <field name="SSID">SSID</field>
+        <field name="Password">Password</field>
+      </block>
+    </statement>
+    <statement name="LOOP_FUNC">
+      <block type="sensebox_interval_timer" id="X_P#A=w;?|RJ;M`=/rz:">
+        <field name="interval">60000</field>
+        <statement name="DO">
+          <block type="sensebox_osem_connection" id="(VYw/_{XGh[b~rZc;;1Y">
+            <field name="BoxID">5caee5a0c9e9ab001a306765</field>
+            <statement name="DO">
+              <block type="sensebox_send_to_osem" id="r`;6kG)Ns{|ZRy=Y%VLC">
+                <field name="SensorID">5caee5a0c9e9ab001a30676a</field>
+                <value name="Value">
+                  <block type="sensebox_sensor_temp_hum" id="y^~6I{^x^4?Ew7+_Tc9:">
+                    <field name="NAME">Temperature</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="sensebox_send_to_osem" id="Jj/iX3K%}4H,h{suIm7f">
+                    <field name="SensorID">SensorID</field>
+                    <value name="Value">
+                      <block type="sensebox_sensor_uv_light" id="[r(i.oRdsZ?o#v;@G4{J">
+                        <field name="NAME">Illuminance</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="sensebox_send_to_osem" id="!9m|6!K%,;X!2V1ER1sp">
+                        <field name="SensorID">SensorID</field>
+                        <value name="Value">
+                          <block type="sensebox_sensor_uv_light" id="^1mgVR;Y5js4ruG`u8=/">
+                            <field name="NAME">UvIntensity</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="sensebox_send_to_osem" id="+g.pBl]z(|i_Geo6J?{/">
+                            <field name="SensorID">SensorID</field>
+                            <value name="Value">
+                              <block type="sensebox_sensor_pressure" id="66s0gGKgy#;Y,|,M,?3M">
+                                <mutation name="Pressure"></mutation>
+                                <field name="NAME">Pressure</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="sensebox_send_to_osem" id="AJ.9t5Y;ytiFpnpI9oK:">
+                                <field name="SensorID">SensorID</field>
+                                <value name="Value">
+                                  <block type="sensebox_sensor_sds011" id="0J5AwLkESoac9kC?PJ9u">
+                                    <field name="NAME">Pm10</field>
+                                    <field name="SERIAL">Serial1</field>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="sensebox_send_to_osem" id="Yx_4qiR#{eCjXwG0vNFj">
+                                    <field name="SensorID">SensorID</field>
+                                    <value name="Value">
+                                      <block type="sensebox_sensor_sds011" id="~Zt.ae#:0r8S.bjQL-`A">
+                                        <field name="NAME">Pm25</field>
+                                        <field name="SERIAL">Serial1</field>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+</xml>
